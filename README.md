@@ -50,3 +50,7 @@ You can check out the bootstraping code here.
 Now that we have our bootstraping code set, lets get started on the kernel. We're going to be calling our version of the `printf` function in order to write some text on screen. But how does that actually write on the screen you might ask? The bootloader will actually create a VGA text mode buffer for us and we simply write to it. The buffer is a two dimenssional array with 25 rows and 80 columns. You can find more information [here](https://en.wikipedia.org/wiki/VGA_text_mode).
 
 You can checkout the kernel code here.
+
+### GRUB Menu Entry
+
+The build process takes care of creating a [GRUB](https://www.gnu.org/software/grub/) menu entry so that the bootloader will show the option to boot into our OS. It bundles it up in a nice `.iso` file. Take a look at the makefile or [here](https://wiki.osdev.org/Bare_Bones#Building_a_bootable_cdrom_image) for more details.

@@ -1,12 +1,12 @@
-/* NOTE: This Assembly code is in Intel Syntax */
+/* NOTE: This Assembly code is in AT&T Syntax */
 
 /* Declare constants for the multiboot header */
 .set ALIGN,     0x01            /* align booted OS modules to page boundaries (4K)*/
 .set MEMINFO,   0x10            /* tells the bootloader to include info in the mem_* fields of the multiboot header */
 
 /* sets the FLAGS constant to 0x3*/
-.set FLAGS,     ALIGN | MEMINFO /* this is the multiboot 'flag' field*/
-.set MAGIC,     0x1BADBOO2      /* 'magic number' lets the bootlader find the header */
+.set FLAGS,     ALIGN | MEMINFO /* this is the multiboot 'flag' field */
+.set MAGIC,     0x1BADB002      /* 'magic number' lets the bootlader find the header */
 .set CHECKSUM, -(MAGIC + FLAGS) /* checksum of above, to prove we are multiboot */
 
 /* 
@@ -45,7 +45,6 @@ The linker script specifies _start as the entry point to the kernel and the
 bootloader will jump to this position once the kernel has been loaded. It
 doesn't make sense to return from this function as the bootloader is gone.
 */
-
 .section .text      /* The section where the code resides */
 .global _start      /* Define a global label for the entry point where the control will eventually be handed of to the kernel code */
 .type _start, @function
@@ -69,7 +68,7 @@ _start:
 	stack (as it grows downwards on x86 systems). This is necessarily done
 	in assembly as languages such as C cannot function without a stack.
 	*/
-    mov esp, $stack_top
+    mov $stack_top, %esp
 
     /*
 	This is a good place to initialize crucial processor state before the
@@ -90,7 +89,6 @@ _start:
 	stack since (pushed 0 bytes so far), so the alignment has thus been
 	preserved and the call is well defined.
 	*/
-
     call kernel_main
 
     /*
@@ -105,7 +103,12 @@ _start:
 	3) Jump to the hlt instruction if it ever wakes up due to a
 	   non-maskable interrupt occurring or due to system management mode.
 	*/
-
     cli
 1:	hlt
 	jmp 1b
+
+/*
+Set the size of the _start symbol to the current location '.' minus its start.
+This is useful when debugging or when you implement call tracing.
+*/
+.size _start, . - _start
