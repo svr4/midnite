@@ -3,7 +3,7 @@ The Midnite Operating System - An exploration on how to build an OS from scratch
 
 # Introduction
 
-This project was born out of a need to learn on how an operating system could be developed from scratch. Along the way I learned that it takes the combination of things to make it happen. As a primer I suggest reading and looking into the following:
+This project was born out of a need to learn on how an operating system could be developed from scratch. Along the way I learned that it takes a combination of things to make it happen. As a primer I suggest reading and looking into the following:
 
 1. Assembly Language (x86_64). [You can find an intro book here](http://www.egr.unlv.edu/~ed/assembly64.pdf). You can find Intel's manual [here](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf).
 2. Knowledge of C and C++. I will be using C++ for this project.
