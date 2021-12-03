@@ -42,18 +42,18 @@ In the bootstraping code in the kernel will be data structures specifically crea
 `NOTE: that the executable portion of the MBR could simply load to another larger executable where you can do some more advanced setup.`
 
 
-You can check out the bootstraping code here.
+You can check out the bootstraping code [here](https://github.com/svr4/midnite/blob/main/src/boot.s).
 
 
 ### Bare Bones Kernel
 
 Now that we have our bootstraping code set, lets get started on the kernel. We're going to be calling our version of the `printf` function in order to write some text on screen. But how does that actually write on the screen you might ask? The bootloader will actually create a VGA text mode buffer for us and we simply write to it. The buffer is a two dimenssional array with 25 rows and 80 columns. You can find more information [here](https://en.wikipedia.org/wiki/VGA_text_mode).
 
-You can checkout the kernel code here.
+You can checkout the kernel code [here](https://github.com/svr4/midnite/blob/main/src/kernel.cpp).
 
 ### Linking our OS
 
-We use the linker file to specify the order we want our executable to be assembled. We make sure that our `multiboot` section is specified early per the specification. Take a moment to look over the file located here.
+We use the linker file to specify the order we want our executable to be assembled. We make sure that our `multiboot` section is specified early per the specification. Take a moment to look over the file located [here](https://github.com/svr4/midnite/blob/main/linker.ld).
 
 ### GRUB Menu Entry
 
