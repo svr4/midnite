@@ -15,7 +15,7 @@ This project was born out of a need to learn how an operating system could be de
 
 ## Writing a Bare Bones Kernel
 
-This section is based on the Bare Bones page example located [here](https://wiki.osdev.org/Bare_Bones). I will try to explain concisely and with as much detail as possible on the `why?` of everything.
+This section is based on the Bare Bones page example located [here](https://wiki.osdev.org/Bare_Bones). I will try to explain with as much detail as possible on the `why?` of everything.
 
 Our target in this section is to produce a bootable kernel that will be able to write some text on the screen. Seems simple enough but how does that even work exactly? Well we need the following:
 
