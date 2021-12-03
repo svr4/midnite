@@ -5,7 +5,7 @@ build: midnite_os.bin
 	i686-elf-g++ -T linker.ld -o src/midnite_os.bin -ffreestanding -O2 -nostdlib src/boot.o src/kernel.o -lgcc
 	grub-file --is-x86-multiboot src/midnite_os.bin
 	mkdir -p isodir/boot/grub
-	cp src/midnite_os.bin isodir/boot/myos.bin
+	cp src/midnite_os.bin isodir/boot/midnite_os.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o midnite_os.iso isodir
 

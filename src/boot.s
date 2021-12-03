@@ -1,8 +1,8 @@
 /* NOTE: This Assembly code is in AT&T Syntax */
 
 /* Declare constants for the multiboot header */
-.set ALIGN,     0x01            /* align booted OS modules to page boundaries (4K)*/
-.set MEMINFO,   0x10            /* tells the bootloader to include info in the mem_* fields of the multiboot header */
+.set ALIGN,     0x1            /* align booted OS modules to page boundaries (4K)*/
+.set MEMINFO,   0x2            /* tells the bootloader to include info in the mem_* fields of the multiboot header */
 
 /* sets the FLAGS constant to 0x3*/
 .set FLAGS,     ALIGN | MEMINFO /* this is the multiboot 'flag' field */
