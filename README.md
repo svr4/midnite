@@ -51,6 +51,10 @@ Now that we have our bootstraping code set, lets get started on the kernel. We'r
 
 You can checkout the kernel code here.
 
+### Linking our OS
+
+We use the linker file to specify the order we want our executable to be assembled. We make sure that our `multiboot` section is specified early per the specification. Take a moment to look over the file located here.
+
 ### GRUB Menu Entry
 
 The build process takes care of creating a [GRUB](https://www.gnu.org/software/grub/) menu entry so that the bootloader will show the option to boot into our OS. It bundles it up in a nice `.iso` file. Take a look at the makefile or [here](https://wiki.osdev.org/Bare_Bones#Building_a_bootable_cdrom_image) for more details.
