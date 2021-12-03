@@ -37,7 +37,7 @@ We're now going to be writing the code that tells the bootloader that we're an O
 
 The hard disk will contain an MBR entry [(Master Boot Record)](https://wiki.osdev.org/Boot_Sequence#Master_Boot_Record) in the first sector of the disk. The MBR is 512 bytes long and contains the so called "magic number" byte sequence `0x55` and `0xAA` at byte offsets 510 and 511 respectivley.
 
-In the bootstraping code in the kernel will be data structures specifically created to interface with the bootloader. This structure is called the [multiboot](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html) header. With the multiboot header the bootloader will know it's dealing with an operating system, will load it into memory and will also provide valuable information to the OS.
+In the bootstraping code will be data structures specifically created to interface with the bootloader. This structure is called the [multiboot](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html) header. With the multiboot header the bootloader will know it's dealing with an operating system, will load it into memory and will also provide valuable information to the OS.
 
 `NOTE: that the executable portion of the MBR could simply load to another larger executable where you can do some more advanced setup.`
 
