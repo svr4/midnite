@@ -11,6 +11,8 @@ This project was born out of a need to learn how an operating system could be de
 4. [This "Getting Started" article from the OSDev Wiki.](https://wiki.osdev.org/Getting_Started)
 5. I will add more resources as development progresses.
 
+`NOTE: We're going to implementing a 32-bit x86 Operating System`
+
 # Getting Started
 
 ## Writing a Bare Bones Kernel
@@ -58,3 +60,77 @@ We use the linker file to specify the order we want our executable to be assembl
 ### GRUB Menu Entry
 
 The build process takes care of creating a [GRUB](https://www.gnu.org/software/grub/) menu entry so that the bootloader will show the option to boot into our OS. It bundles it up in a nice `.iso` file. Take a look at the makefile or [here](https://wiki.osdev.org/Bare_Bones#Building_a_bootable_cdrom_image) for more details.
+
+
+# Memory Management
+
+In this section we're going to be implementing memory management in our OS. This can be achieved with the following mechanisms:
+
+1. [Segmentation](https://en.wikipedia.org/wiki/Memory_segmentation)
+    - [Segmentation OSDev Wiki](https://wiki.osdev.org/Segmentation)
+    - [Global Descriptor Table](https://wiki.osdev.org/Global_Descriptor_Table)
+    - [x86 Memory Segmentation](https://en.wikipedia.org/wiki/X86_memory_segmentation) `I like the history and detailed explanation in this article.`
+2. [Paging](https://wiki.osdev.org/Paging)
+    - [Page Table](https://en.wikipedia.org/wiki/Page_table)
+
+Let's talk a little about each one.
+
+`NOTE: The maximum addressable memory on x86 systems is 4 GB (4,294,967,296 bytes).`
+
+## Segmentation
+
+This a mechanism the OS can use to manage its memory. It consists of dividing the computers memory into pieces called `segments`. Once a program is loaded into memory it's different parts (text, code and bss sections) are loaded into separate contiguous (and often overlapping) memory segments.
+
+The different program parts are loaded into the following 16-bit (in x86) registers:
+
+| Register  | Description |
+| ------------- | ------------- |
+| CS  | Code Segment  |
+| DS  | Data Segment  |
+| SS  | Stack Segment  |
+| ES  | Extra Segment  |
+| FS  | General Purpose Segment |
+| GS  | General Purpose Segment |
+
+Segmentation also results in `memory fragmentation` which can happen when there's not enough contiguous free space in memory, even though there may be enough total memory available.
+
+Today, segmentation is only used to provide backwards compatibility and is not used in current x86_64 operating systems in favor of paging. All the literature recommends setting up a flat-memory model (AKA make each segment as long as the whole width of available memory) and set up segmentation because we can't turn it off at the CPU level.
+
+### How do we set up segmentation?
+
+In order to setup segmentation we need to implement a Global Descriptor Table (GDT). This table contains entries that tell the CPU about memory segments.
+
+Each entry (called Segment Selectors that reference [Segment Descriptors](https://en.wikipedia.org/wiki/Segment_descriptor)) in the GDT is `8-bytes` long and contains information about the process like the base address, size and privileges like executability and writability.
+
+Once we setup our GDT data structure we have to load the base address of the table into the `gdtr` register like so:
+
+```asm
+    lgdt address_of_gdt
+```
+
+`NOTE: We're going to be using assembly directly in our C++ code but the GDT setup can be done completely in assembly.`
+
+You can check out the GDT code here.
+
+
+## Paging
+
+Paging allows an operating system see a large `virtual` memory address space without requiring the full amount of physical memory to be present in the system. This method replaces segmentation and solves the memory fragmentation problem since contiguous virtual address can point to non contiguous spaces of physical memory.
+
+### How does paging work?
+
+Paging uses the [Memory Management Unit](https://wiki.osdev.org/Memory_Management_Unit) (MMU) in the computer for virtual address translation to a physical address in RAM. On x86 virtual memory is mapped throught the use of two tables:
+
+1. Page Directory (PD)
+2. Page Table (PT)
+
+Each table contains 1,024 entries which are 4-bytes in size, making them 4096 KB each. In the PD each entry points to a PT. In the PT each entry points to a 4096 KB physical page frame.
+
+According to the [OSDev Wiki](https://wiki.osdev.org/Paging):
+
+```
+Translation of a virtual address into a physical address first involves dividing the virtual address into three parts: the most significant 10 bits (bits 22-31) specify the index of the page directory entry, the next 10 bits (bits 12-21) specify the index of the page table entry, and the least significant 12 bits (bits 0-11) specify the page offset. The then MMU walks through the paging structures, starting with the page directory, and uses the page directory entry to locate the page table. The page table entry is used to locate the base address of the physical page frame, and the page offset is added to the physical base address to produce the physical address. If translation fails for some reason (entry is marked as not present, for example), then the processor issues a page fault. 
+
+```
+
+You can check out the Paging code here.

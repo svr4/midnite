@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <gdt/gdt.hpp>
  
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -103,12 +104,27 @@ void terminal_writestring(const char* data)
 {
 	terminal_write(data, strlen(data));
 }
+
+/* Initialize Constructors */
+typedef void (*constructor)();
+extern "C" constructor start_ctors;
+extern "C" constructor end_ctors;
+extern "C" void callConstructors()
+{
+    for(constructor* i = &start_ctors; i != &end_ctors; i++)
+        (*i)();
+}
  
 extern "C" void kernel_main(void) 
 {
 	/* Initialize terminal interface */
 	terminal_initialize();
+
+	/* Setup GDT */
+	GDT gdt;
  
 	/* Newline support is left as an exercise. */
 	terminal_writestring("Hello, kernel World!\n");
+
+	while(1);
 }

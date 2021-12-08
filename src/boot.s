@@ -45,8 +45,9 @@ The linker script specifies _start as the entry point to the kernel and the
 bootloader will jump to this position once the kernel has been loaded. It
 doesn't make sense to return from this function as the bootloader is gone.
 */
-.section .text      /* The section where the code resides */
-.global _start      /* Define a global label for the entry point where the control will eventually be handed of to the kernel code */
+.section .text      		/* The section where the code resides */
+.extern callConstructors	/* Calls and inits constructors */
+.global _start      		/* Define a global label for the entry point where the control will eventually be handed of to the kernel code */
 .type _start, @function
 _start:
 
@@ -69,7 +70,7 @@ _start:
 	in assembly as languages such as C cannot function without a stack.
 	*/
     mov $stack_top, %esp
-
+	call callConstructors
     /*
 	This is a good place to initialize crucial processor state before the
 	high-level kernel is entered. It's best to minimize the early
