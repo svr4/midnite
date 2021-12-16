@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <gdt/gdt.hpp>
+#include <vmm/vmm.hpp>
  
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -122,6 +123,10 @@ extern "C" void kernel_main(void)
 
 	/* Setup GDT */
 	GDT gdt;
+
+	// /* Setup Virtual Memory */
+	// Vmm vmm;
+	// vmm.init();
  
 	/* Newline support is left as an exercise. */
 	terminal_writestring("Hello, kernel World!\n");

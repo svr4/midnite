@@ -6,19 +6,19 @@ SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 access) {
     u16 limit_low;
     u16 base_low;
     u8  base_hi;
-    u8  flagsAndLimit;
+    u8  flags_and_limit;
     u8  base_vhi;
 
     u8 *limit_low_ptr = (u8 *)(&limit_low);
     u8 *base_low_ptr = (u8 *)(&base_low);
-    u8 *flagsAndLimit_ptr = &flagsAndLimit;
+    u8 *flags_and_limit_ptr = &flags_and_limit;
 
     // We need to check the incoming limit.
     // The limit determines the amount of addressable memory the system has.
 
     if(limit <= 65536) {  // 2^16
         // 16-bit address space
-        flagsAndLimit = 0x40; // 0100 0000
+        flags_and_limit = 0x40; // 0100 0000
     }
     else {
 
@@ -44,14 +44,14 @@ SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 access) {
             limit = limit >> 12;
         }
 
-        flagsAndLimit = 0xC0; // 1100 0000
+        flags_and_limit = 0xC0; // 1100 0000
 
     }
 
     // Encode the limit
     limit_low_ptr[0] = limit & 0xFF; // first 8 bits
     limit_low_ptr[1] = (limit >> 8) & 0xFF; // second 8 bits
-    flagsAndLimit_ptr[1] = (limit >> 16) & 0xF; // the last 4 bits
+    flags_and_limit_ptr[1] = (limit >> 16) & 0xF; // the last 4 bits
     // totals 20-bit limit
 
     // Encode the base
@@ -66,7 +66,7 @@ SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 access) {
     this->base_low = base_low;
     this->base_hi = base_hi;
     this->access = access;
-    this->flagsAndLimit = flagsAndLimit;
+    this->flags_and_limit = flags_and_limit;
     this->base_vhi = base_vhi;
 
 }
@@ -85,11 +85,11 @@ u32 SegmentDescriptor::Base() {
 }
 
 u32 SegmentDescriptor::Limit() {
-    u32 result = this->flagsAndLimit & 0xF;
+    u32 result = this->flags_and_limit & 0xF;
     result = (result << 16) + this->limit_low;
 
     // if we removed the 12 bits, lets add them back.
-    if((this->flagsAndLimit & 0xC0) == 0xC0) {
+    if((this->flags_and_limit & 0xC0) == 0xC0) {
         result = (result << 12) | 0xFFF;
     }
 

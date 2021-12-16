@@ -110,7 +110,7 @@ Once we setup our GDT data structure we have to load the base address of the tab
 
 `NOTE: We're going to be using assembly directly in our C++ code but the GDT setup can be done completely in assembly.`
 
-You can check out the GDT code here.
+You can check out the GDT code [here](https://github.com/svr4/midnite/blob/main/src/gtd/gdt.cpp).
 
 
 ## Paging
@@ -132,5 +132,25 @@ According to the [OSDev Wiki](https://wiki.osdev.org/Paging):
 Translation of a virtual address into a physical address first involves dividing the virtual address into three parts: the most significant 10 bits (bits 22-31) specify the index of the page directory entry, the next 10 bits (bits 12-21) specify the index of the page table entry, and the least significant 12 bits (bits 0-11) specify the page offset. The then MMU walks through the paging structures, starting with the page directory, and uses the page directory entry to locate the page table. The page table entry is used to locate the base address of the physical page frame, and the page offset is added to the physical base address to produce the physical address. If translation fails for some reason (entry is marked as not present, for example), then the processor issues a page fault. 
 
 ```
+
+
+## High Half Kernel
+
+You might be wondering why this section exists here. I'll tell you why. Linux and other Unices reside in `0xC0000000 – 0xFFFFFFFF` in the address space of every process, leaving the range of `0x00000000 – 0xBFFFFFFF` for user code, stack, etc. (Remmember the GDT we designed is a flat one that encompases the whole 4 GB of addressable memory). That means that the kernel will reside in the `higher half` of `virtual` memory, while the rest is left for the user's code. In the physicall address space the kernel will be in the 1 Mb mark of memory, as specified by our linker file.
+
+According to the [OS Dev Wiki](https://wiki.osdev.org/Higher_Half_Kernel) these are the advantages:
+
+'''
+Advantages of a higher half kernel are:
+
+    1. It's easier to set up VM86 processes since the region below 1 MB is userspace.
+    2. More generally, user applications are not dependent on how much memory is kernel space (your application can be linked to 0x400000 regardless of whether kernel is at 0xC0000000, 0x80000000 or 0xE0000000 ...), which makes the ABI nicer.
+    3. If your OS is 64-bit, then 32-bit applications will be able to use the full 32-bit address space.
+    'Mnemonic' invalid pointers such as 0xCAFEBABE, 0xDEADBEEF, 0xDEADC0DE, etc. can be used. 
+'''
+
+`Note: #1 actually refers to the virtual memory address space.`
+
+We're going to be setting up `Paging` and the `higher half kernel` at the same time.
 
 You can check out the Paging code here.

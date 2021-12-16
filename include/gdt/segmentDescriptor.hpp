@@ -10,7 +10,7 @@ class SegmentDescriptor {
         u16 base_low;
         u8  base_hi;
         u8  access;
-        u8  flagsAndLimit;
+        u8  flags_and_limit;
         u8  base_vhi;
 
     public:
