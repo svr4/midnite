@@ -9,10 +9,13 @@ build: midnite_os.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o midnite_os.iso isodir
 
-midnite_os.bin: src/boot.o src/kernel.o src/gdt/segmentDescriptor.o src/gdt/gdt.o
+midnite_os.bin: src/boot.o src/reloadSegments.o src/kernel.o src/gdt/segmentDescriptor.o src/gdt/gdt.o
 
 boot.o: src/boot.s
 	i686-elf-as src/boot.s -o boot.o
+
+reloadSegments.o: src/reloadSegments.s
+	i686-elf-as src/reloadSegments.s -o reloadSegments.o
 
 segmentDescriptor.o:
 	i686-elf-g++ -c src/gdt/segmentDescriptor.cpp -o segmentDescriptor.o

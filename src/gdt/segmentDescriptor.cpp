@@ -9,10 +9,6 @@ SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 access) {
     u8  flagsAndLimit;
     u8  base_vhi;
 
-    u8 *limit_low_ptr = (u8 *)(&limit_low);
-    u8 *base_low_ptr = (u8 *)(&base_low);
-    u8 *flagsAndLimit_ptr = &flagsAndLimit;
-
     // We need to check the incoming limit.
     // The limit determines the amount of addressable memory the system has.
 
@@ -49,14 +45,14 @@ SegmentDescriptor::SegmentDescriptor(u32 base, u32 limit, u8 access) {
     }
 
     // Encode the limit
-    limit_low_ptr[0] = limit & 0xFF; // first 8 bits
-    limit_low_ptr[1] = (limit >> 8) & 0xFF; // second 8 bits
-    flagsAndLimit_ptr[1] = (limit >> 16) & 0xF; // the last 4 bits
+    limit_low = limit & 0xFF;
+    limit_low = limit_low | ((limit >> 8) & 0xFF);
+    flagsAndLimit = flagsAndLimit | ((limit >> 16) & 0xF);
     // totals 20-bit limit
 
     // Encode the base
-    base_low_ptr[0] = base & 0xFF; // first 8 bits
-    base_low_ptr[1] = (base >> 8) & 0xFF; // second 8 bits
+    base_low = base & 0xFF; // first 8 bits
+    base_low = (base >> 8) & 0xFF; // second 8 bits
     base_hi = (base >> 16) && 0xFF; // third 8 bits
     base_vhi = (base >> 24) && 0xFF; // fourth 8 bits
 
