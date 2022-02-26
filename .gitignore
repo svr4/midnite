@@ -3,3 +3,5 @@
 *.bin
 isodir
 *.txt
+*.sym
+.vscode

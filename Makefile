@@ -3,13 +3,11 @@ CXX=i686-elf-g++ -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno
 CXXPARAMS = -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 
 objects = obj/boot.o \
+		obj/reload_segments.o \
 		obj/segment_descriptor.o \
 		obj/gdt.o \
 		obj/vmm.o \
 		obj/kernel.o \
-
-#		obj/page_directory.o \
-		obj/page_table.o \
 
 run: midnite_os.iso
 	qemu-system-i386 -cdrom midnite_os.iso
@@ -41,16 +39,6 @@ obj/%.o: src/vmm/%.cpp
 
 midnite_os.bin: $(objects)
 
-# midnite_os.bin: src/boot.o src/kernel.o src/gdt/segmentDescriptor.o src/gdt/gdt.o
-
-# boot.o: src/boot.s
-# 	i686-elf-as src/boot.s -o boot.o
-
-# segmentDescriptor.o:
-# 	i686-elf-g++ -c src/gdt/segmentDescriptor.cpp -o segmentDescriptor.o
-
-# gdt.o:
-# 	i686-elf-g++ -c src/gdt/segmentDescriptor.cpp src/gdt/gdt.cpp -o gdt.o
-
-# kernel.o: src/kernel.cpp
-# 	i686-elf-g++ -c src/kernel.cpp -o kernel.o
+.PHONY: clean
+clean:
+	rm -f $(objects) bin/midnite_os.bin midnite_os.iso
