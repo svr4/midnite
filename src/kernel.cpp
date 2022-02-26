@@ -13,6 +13,8 @@
 #error "This tutorial needs to be compiled with a ix86-elf compiler"
 #endif
  
+extern "C" void reload_segments();
+
 /* Hardware text mode color constants. */
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
@@ -122,6 +124,7 @@ extern "C" void kernel_main(void)
 
 	/* Setup GDT */
 	GDT gdt;
+	reload_segments();
  
 	/* Newline support is left as an exercise. */
 	terminal_writestring("Hello, kernel World!\n");
