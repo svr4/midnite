@@ -61,13 +61,6 @@ SetVideoMode:
     mov ax, 3
     int 0x10
 
-KernelBootstrapper:
-    extern callConstructors 
-    extern kernel_main
-    
-    call callConstructors 
-    call kernel_main
-
 LoadKernel:
     mov [DriveId], dl
     mov si, ReadPacket
@@ -80,6 +73,16 @@ LoadKernel:
     mov ah, 0x42 ; https://en.wikipedia.org/wiki/INT_13H#INT_13h_AH=42h:_Extended_Read_Sectors_From_Drive
     int 0x13
     jc ReadError
+
+KernelBootstrapper:
+    extern callConstructors 
+    extern kernel_main
+
+    cli ; Disable interrupts
+    
+    
+    call callConstructors 
+    call kernel_main
 
 ReadError:
     ; ; Call the BIOS interrupt 0x10 to print a message on screen.
