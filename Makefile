@@ -2,7 +2,8 @@ AS=i686-elf-as --32
 CXX=i686-elf-g++ -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 CXXPARAMS = -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 
-objects = obj/boot.bin
+objects = obj/boot.bin \
+		obj/loader.bin
 
 # run: midnite_os.iso
 # 	qemu-system-i386 -cdrom midnite_os.iso
@@ -10,7 +11,7 @@ objects = obj/boot.bin
 
 build: midnite_os.bin
 	dd if=obj/boot.bin of=/home/marcel/OSDevelopment/bochs/midnite.img bs=512 count=1 conv=notrunc
-
+	dd if=obj/loader.bin of=/home/marcel/OSDevelopment/bochs/midnite.img bs=512 count=5 seek=1 conv=notrunc
 # build: midnite_os.bin
 # 	mkdir -p bin
 # 	i686-elf-g++ -T linker.ld -o bin/midnite_os.bin -ffreestanding -O2 -nostdlib $(objects)-lgcc

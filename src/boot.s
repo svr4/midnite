@@ -14,7 +14,36 @@ start:
     mov ss, ax
     mov sp, 0x7c00
 
-PrintMessage:
+
+TestDiskExtension:
+; Contains the HDD drive ID that will be used when BIOS transfers control to boot code.
+    mov [DriveId], dl
+    mov ah, 0x41 ; https://en.wikipedia.org/wiki/INT_13H#INT_13h_AH=41h:_Check_Extensions_Present
+    mov bx, 0x55AA
+    int 0x13 ; Call the BIOS function to test for LBA
+    ; If the service is not supported te carry flag is set.
+    jc NoSupport
+    cmp bx, 0xAA55 ; If bx is not eq to 0xAA55 it's not supported
+    jne NoSupport
+
+LoadLoader:
+    mov si, ReadPacket
+    mov word[si], 0x10
+    mov word[si+2], 5
+    mov word[si+4], 0x7E00
+    mov word[si+6], 0
+    mov dword[si+8], 1
+    mov dword[si+12], 0
+    mov dl, [DriveId]
+    mov ah, 0x42 ; https://en.wikipedia.org/wiki/INT_13H#INT_13h_AH=42h:_Extended_Read_Sectors_From_Drive
+    int 0x13
+    jc ReadError
+
+    mov dl, [DriveId]
+    jmp 0x7E00
+
+ReadError:
+NoSupport:
 ; Call the BIOS interrupt 0x10 to print a message on screen.
     mov ah, 0x13 ; Param: Indicates the function code to print. 
     mov al, 1 ; Param: Indicates the cursor will be set at the end of the screen. 
@@ -30,8 +59,10 @@ End:
 
 
 
-Message:    db "Hello"
+DriveId:    db  0
+Message:    db "We have error in boot process."
 MessageLen: equ $-Message
+ReadPacket: times 16 db 0
 
 ; Making the MBR
 ; We start at 0x1BE becasue the BIOS expects the first partition to be at this offset.
