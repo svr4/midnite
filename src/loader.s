@@ -3,29 +3,6 @@ bits 16
 org 0x7E00
 
 start:
-; ; Call the BIOS interrupt 0x10 to print a message on screen.
-;     mov ah, 0x13 ; Param: Indicates the function code to print. 
-;     mov al, 1 ; Param: Indicates the cursor will be set at the end of the screen. 
-;     mov bx, 0xA ; Param: Indicates the character attributes. Prints in bright green. [bh:bl] bh represents page number, bl char attributes
-;     xor dx, dx ; Param: [dh:dl] dh - rows dl - cols. In this case 0,0 zeroed out. 
-;     mov bp, Message ; Param: Addres of string. 
-;     mov cx, MessageLen ; Param: Num of chars to print. 
-;     int 0x10
-
-LoadKernel:
-    mov [DriveId], dl
-    mov si, ReadPacket
-    mov word[si], 0x10
-    mov word[si+2], 100
-    mov word[si+4], 0 ; offset
-    mov word[si+6], 0x1000 ; segment
-    mov dword[si+8], 6 ; sector
-    mov dword[si+12], 0
-    mov ah, 0x42 ; https://en.wikipedia.org/wiki/INT_13H#INT_13h_AH=42h:_Extended_Read_Sectors_From_Drive
-    int 0x13
-    jc ReadError
-
-
 GetMemoryInfoStart:
     mov eax, 0xE820
     mov edx, 0x534D4150 ; smap in ascii
@@ -83,6 +60,26 @@ SetA20LineDone:
 SetVideoMode:
     mov ax, 3
     int 0x10
+
+KernelBootstrapper:
+    extern callConstructors 
+    extern kernel_main
+    
+    call callConstructors 
+    call kernel_main
+
+LoadKernel:
+    mov [DriveId], dl
+    mov si, ReadPacket
+    mov word[si], 0x10
+    mov word[si+2], 100
+    mov word[si+4], 0 ; offset
+    mov word[si+6], 0x1000 ; segment
+    mov dword[si+8], 6 ; sector
+    mov dword[si+12], 0
+    mov ah, 0x42 ; https://en.wikipedia.org/wiki/INT_13H#INT_13h_AH=42h:_Extended_Read_Sectors_From_Drive
+    int 0x13
+    jc ReadError
 
 ReadError:
     ; ; Call the BIOS interrupt 0x10 to print a message on screen.

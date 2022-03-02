@@ -1,6 +1,6 @@
 AS=i686-elf-as --32
-CXX=i686-elf-g++ -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
-CXXPARAMS = -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
+CXX=i686-elf-g++ -g -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
+CXXPARAMS = -g -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 
 objects = obj/boot.bin \
 		obj/loader.bin
