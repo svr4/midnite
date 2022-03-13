@@ -67,7 +67,7 @@ ReadPacket: times 16 db 0
 ; Making the MBR
 ; We start at 0x1BE becasue the BIOS expects the first partition to be at this offset.
 ; https://wiki.osdev.org/MBR_(x86)
-times   (0x1BE-($-$$)) db 0
+times   (0x1BE-($-$$)) db 0 ; $ = current address $$= start of program address
 ; This is the first partition indicator
     db 0x80 ; Boot indicator. Tells the BIOS this partition is bootable.
 
