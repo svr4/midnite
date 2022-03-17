@@ -16,7 +16,7 @@ build: midnite_os.bin
 	dd if=obj/k_bootstrap.bin of=/home/marcel/OSDevelopment/bochs/midnite.img bs=512 count=100 seek=6 conv=notrunc
 # build: midnite_os.bin
 # 	mkdir -p bin
-# 	i686-elf-g++ -T linker.ld -o bin/midnite_os.bin -ffreestanding -O2 -nostdlib $(objects)-lgcc
+# i686-elf-g++ -T linker.ld -o bin/midnite_os.bin -ffreestanding -O2 -nostdlib $(objects)-lgcc
 
 # obj/%.o: src/%.cpp
 # 	mkdir -p $(@D)

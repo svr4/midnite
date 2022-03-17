@@ -9,14 +9,6 @@ SECTIONS
 	/* Begin putting sections at 1 MiB, a conventional place for kernels to be
 	   loaded at by the bootloader. */
 	. = 0x00100000;
- 
-	/* First put the multiboot header, as it is required to be put very early
-	   early in the image or the bootloader won't recognize the file format.
-	   Next we'll put the .text section. */
-
-	.multiboot ALIGN(4K) : {
-		*(.multiboot)
-	}
 
 	/*: AT(ADDR(.text) - 0xC00000000)*/
 
