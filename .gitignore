@@ -5,3 +5,5 @@ isodir
 *.txt
 *.sym
 .vscode
+bin
+obj

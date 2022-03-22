@@ -109,7 +109,6 @@ PMEntry:
     mov ds, ax
     mov es, ax
     mov ss, ax
-    mov esp, 0x7c00
 
     ; move loaded kernel to 1MB address
     cld
@@ -190,7 +189,7 @@ Data32:
 
 Gdt32Len: equ $-Gdt32
 
-Gdt32Ptr:   dw Gdt32Ptr-1
+Gdt32Ptr:   dw Gdt32Len-1
             dd Gdt32
 
 Idt32Ptr:   dw 0

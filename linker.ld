@@ -1,6 +1,7 @@
 /* The bootloader will look at this image and start execution at the symbol
    designated as the entry point. Remmember the symbol is defined in src/boot.s */
-ENTRY(_start)
+OUTPUT_FORMAT("elf32-i386")
+ENTRY(start)
  
 /* Tell where the various sections of the object files will be put in the final
    kernel image. */
@@ -11,21 +12,21 @@ SECTIONS
 	. = 0x00100000;
 
 	/*: AT(ADDR(.text) - 0xC00000000)*/
-
-	.text BLOCK(4K) : ALIGN(4K)
+	/* BLOCK(4K) : ALIGN(4K) */
+	.text :
 	{
 		/* *(.multiboot) */
 		*(.text)
 	}
  
 	/* Read-only data. */
-	.rodata BLOCK(4K) : ALIGN(4K)
+	.rodata :
 	{
 		*(.rodata)
 	}
  
 	/* Read-write data (initialized) */
-	.data BLOCK(4K) : ALIGN(4K)
+	.data :
 	{
 		start_ctors = .;
 		KEEP(*( .init_array ));
@@ -36,7 +37,7 @@ SECTIONS
 	}
  
 	/* Read-write data (uninitialized) and stack */
-	.bss BLOCK(4K) : ALIGN(4K)
+	.bss :
 	{
 		*(COMMON)
 		*(.bss)
