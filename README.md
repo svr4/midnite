@@ -112,7 +112,7 @@ Once we setup our GDT data structure we have to load the base address of the tab
     lgdt address_of_gdt
 ```
 
-`NOTE: We're going to be using assembly directly in our C++ code but the GDT setup can be done completely in assembly.`
+`NOTE: We're going to be using assembly to setup our kernel's GDT.`
 
 You can check out the GDT code [here](https://github.com/svr4/midnite/blob/main/src/loader.s).
 
