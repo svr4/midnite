@@ -5,6 +5,8 @@ CXXPARAMS = -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 objects = obj/boot.o \
 		obj/string.o \
 		obj/terminal.o \
+		obj/gdt_load.o \
+		obj/gdt.o \
 		obj/kernel.o \
 
 run: midnite_os.iso
