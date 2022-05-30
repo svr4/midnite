@@ -14,26 +14,26 @@ SECTIONS
 	   early in the image or the bootloader won't recognize the file format.
 	   Next we'll put the .text section. */
 
-	.multiboot ALIGN(4K) : {
+	.multiboot : {
 		*(.multiboot)
 	}
 
 	/*: AT(ADDR(.text) - 0xC00000000)*/
-
-	.text BLOCK(4K) : ALIGN(4K)
+/* BLOCK(4K) : ALIGN(4K) */
+	.text :
 	{
-		/* *(.multiboot) */
+		/* (.multiboot) */
 		*(.text)
 	}
  
 	/* Read-only data. */
-	.rodata BLOCK(4K) : ALIGN(4K)
+	.rodata :
 	{
 		*(.rodata)
 	}
  
 	/* Read-write data (initialized) */
-	.data BLOCK(4K) : ALIGN(4K)
+	.data :
 	{
 		start_ctors = .;
 		KEEP(*( .init_array ));
@@ -44,7 +44,7 @@ SECTIONS
 	}
  
 	/* Read-write data (uninitialized) and stack */
-	.bss BLOCK(4K) : ALIGN(4K)
+	.bss :
 	{
 		*(COMMON)
 		*(.bss)

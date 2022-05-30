@@ -1,12 +1,10 @@
 AS=i686-elf-as --32
-CXX=i686-elf-g++ -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
-CXXPARAMS = -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
+CXX=i686-elf-g++ -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32
+CXXPARAMS = -Iinclude -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32
 
 objects = obj/boot.o \
-		obj/reload_segments.o \
-		obj/segment_descriptor.o \
-		obj/gdt.o \
-		obj/vmm.o \
+		obj/string.o \
+		obj/terminal.o \
 		obj/kernel.o \
 
 run: midnite_os.iso
@@ -14,7 +12,7 @@ run: midnite_os.iso
 
 build: midnite_os.bin
 	mkdir -p bin
-	i686-elf-g++ -T linker.ld -o bin/midnite_os.bin -ffreestanding -O2 -nostdlib $(objects)-lgcc
+	i686-elf-g++ -T linker.ld -z max-page-size=4096 -o bin/midnite_os.bin -ffreestanding -O2 -nostdlib $(objects)-lgcc
 	grub-file --is-x86-multiboot bin/midnite_os.bin
 	mkdir -p isodir/boot/grub
 	cp bin/midnite_os.bin isodir/boot/midnite_os.bin
@@ -30,6 +28,14 @@ obj/%.o: src/%.s
 	i686-elf-as -o $@ $<
 	
 obj/%.o: src/gdt/%.cpp
+	mkdir -p $(@D)
+	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
+
+obj/%.o: src/include/common/%.cpp
+	mkdir -p $(@D)
+	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
+
+obj/%.o: src/include/display/%.cpp
 	mkdir -p $(@D)
 	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
 
