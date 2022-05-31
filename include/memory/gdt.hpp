@@ -28,7 +28,7 @@ typedef struct gdt_ptr gdt_ptr_t;
 
 /* ASM routine to load the entry values into segment registers
 and jump into CS after switching on protected mode. */
-extern void gdt_load(uint32_t);
+extern "C" void gdt_load(uint32_t);
 
 #define SEGMENT_UNUSED  0x0
 #define SEGMENT_KCODE   0x1
@@ -45,7 +45,7 @@ class GDT
         static gdt_entry_t gdt[NUM_SEGMENTS];
         static gdt_ptr_t gdt_ptr;
 
-        void init();
+        static void init();
         static void set_entry(int index, uint32_t base, uint32_t limit, uint32_t access, uint32_t flags);
 };
 

@@ -41,6 +41,10 @@ obj/%.o: src/include/display/%.cpp
 	mkdir -p $(@D)
 	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
 
+obj/%.o: src/include/memory/%.cpp
+	mkdir -p $(@D)
+	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
+
 obj/%.o: src/vmm/%.cpp
 	mkdir -p $(@D)
 	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
