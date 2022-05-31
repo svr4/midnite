@@ -5,7 +5,8 @@
 
 uint16_t* const Terminal::VGA_MEMORY = (uint16_t*) 0xB8000;
 const vga_color Terminal::TERMINAL_DEFAULT_COLOR_BG = VGA_COLOR_BLACK;
-const vga_color Terminal::TERMINAL_DEFAULT_COLOR_FG = VGA_COLOR_WHITE;
+const vga_color Terminal::TERMINAL_DEFAULT_COLOR_FG = VGA_COLOR_GREEN;
+// const vga_color Terminal::TERMINAL_DEFAULT_COLOR_FG = VGA_COLOR_WHITE;
 
 size_t Terminal::terminal_row;
 size_t Terminal::terminal_column;

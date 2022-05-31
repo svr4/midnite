@@ -3,7 +3,7 @@
 
 gdt_load:
 
-    mov 4(%esp), %eax
+    movl 4(%esp), %eax
     lgdt (%eax)
 
     mov $0x10, %ax

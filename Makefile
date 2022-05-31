@@ -7,6 +7,10 @@ objects = obj/boot.o \
 		obj/terminal.o \
 		obj/gdt_load.o \
 		obj/gdt.o \
+		obj/idt_load.o \
+		obj/isr.o \
+		obj/isr_stubs.o \
+		obj/idt.o \
 		obj/kernel.o \
 
 run: midnite_os.iso
@@ -42,6 +46,10 @@ obj/%.o: src/include/display/%.cpp
 	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
 
 obj/%.o: src/include/memory/%.cpp
+	mkdir -p $(@D)
+	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
+
+obj/%.o: src/include/interrupt/%.cpp
 	mkdir -p $(@D)
 	i686-elf-g++ $(CXXPARAMS) -c $< -o $@
 

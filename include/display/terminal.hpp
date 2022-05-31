@@ -9,7 +9,7 @@ class Terminal
 {
     private:
 
-        void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+        static void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
 
     public:
         static const vga_color TERMINAL_DEFAULT_COLOR_BG;
@@ -23,10 +23,10 @@ class Terminal
         static size_t terminal_column;
         static uint16_t* terminal_buffer;
 
-        void terminal_init();
-        void terminal_write(const char *data, size_t size);
-        void terminal_write_color(const char *data, size_t size, vga_color fg);
-        void terminal_clear();
+        static void terminal_init();
+        static void terminal_write(const char *data, size_t size);
+        static void terminal_write_color(const char *data, size_t size, vga_color fg);
+        static void terminal_clear();
 
 };
 #endif

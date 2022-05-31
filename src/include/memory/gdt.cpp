@@ -6,7 +6,7 @@ gdt_ptr_t GDT::gdt_ptr;
 
 void GDT::init()
 {
-    gdt_ptr.size = (sizeof(gdt_entry_t) * 5) - 1;
+    gdt_ptr.size = (sizeof(gdt_entry_t) * NUM_SEGMENTS) - 1;
     gdt_ptr.base = (uint32_t)&gdt;
 
     set_entry(SEGMENT_UNUSED, 0, 0, 0, 0);
@@ -25,7 +25,8 @@ void GDT::set_entry(int index, uint32_t base, uint32_t limit, uint32_t access, u
     gdt[index].base_hi = (base >> 24) & 0xFF;
 
     gdt[index].limit_low = (limit & 0xFFFF);
-    gdt[index].flag_limit = (flags && 0xF) | ((limit >> 16) & 0x0F);
+    gdt[index].flag_limit = ((limit >> 16) & 0x0F);
+    gdt[index].flag_limit |= (flags & 0xF0);
 
     gdt[index].access = access;
 }
