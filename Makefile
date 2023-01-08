@@ -31,6 +31,9 @@ build: midnite_os.bin
 	cp grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o midnite_os.iso isodir
 
+run: midnite_os.iso
+	qemu-system-i386 -cdrom midnite_os.iso
+
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)
 	i686-elf-g++ $(CXXPARAMS) -c -o $@ $<
