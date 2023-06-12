@@ -43,41 +43,30 @@ The hard disk will contain an MBR entry [(Master Boot Record)](https://wiki.osde
 
 `NOTE: The executable portion of the MBR could simply load to another larger executable where you can do some more advanced setup.`
 
+In the bootstraping code there will be data structures specifically created to interface with the bootloader. This structure is called the multiboot header. With the multiboot header the bootloader will know it's dealing with an operating system, will load it into memory and will also provide valuable information to the OS.
+
 
 You can check out the boot code [here](https://github.com/svr4/midnite/blob/main/src/boot.s).
 
-
-## Loading our Kernel
-
-As noted in the previous section the boot code could simply load another larger piece of code since we are limited to only the first 512 bytes of the disk.
-
-Our loader will take care of loading the kernel at the `0x0100000` (1MB) mark of memory, it will put the CPU in `protected` mode and `jmp` the execution into the kernel.
-
-The code is heavily documented and you can look at it [here](https://github.com/svr4/midnite/blob/main/src/loader.s)
-
 ### Bare Bones Kernel
 
-Now that we have our loader code set, lets get started on the kernel. We're going to be calling our version of the `printf` function in order to write some text on screen. But how does that actually write on the screen you might ask? The loader will actually setup a VGA text mode buffer for us and we simply write to it. The buffer is a two dimenssional array with 25 rows and 80 columns. You can find more information [here](https://en.wikipedia.org/wiki/VGA_text_mode).
+Now that we have our bootstraping code set, lets get started on the kernel. We're going to be calling our version of the `printf` function in order to write some text on screen. But how does that actually write on the screen you might ask? The loader will actually setup a VGA text mode buffer for us and we simply write to it. The buffer is a two dimenssional array with 25 rows and 80 columns. You can find more information [here](https://en.wikipedia.org/wiki/VGA_text_mode).
 
 You can checkout the kernel code [here](https://github.com/svr4/midnite/blob/main/src/kernel.cpp).
 
 ### Linking our OS
 
-We use the linker file to specify the order we want our executable to be assembled. Take a moment to look over the file located [here](https://github.com/svr4/midnite/blob/main/linker.ld). More information on linker scripts can be found [here](https://wiki.osdev.org/Linker_Scripts).
+We use the linker file to specify the order we want our executable to be assembled. We make sure that our multiboot section is specified early per the specification. Take a moment to look over the file located [here](https://github.com/svr4/midnite/blob/main/linker.ld). More information on linker scripts can be found [here](https://wiki.osdev.org/Linker_Scripts).
 
 
-# Memory Management
+# Memory Management I
 
-In this section we're going to be implementing memory management in our OS. This can be achieved with the following mechanisms:
+In this section we're going to be implementing memory management in our OS. This can be achieved with the following mechanism:
 
 1. [Segmentation](https://en.wikipedia.org/wiki/Memory_segmentation)
     - [Segmentation OSDev Wiki](https://wiki.osdev.org/Segmentation)
     - [Global Descriptor Table](https://wiki.osdev.org/Global_Descriptor_Table)
-    - [x86 Memory Segmentation](https://en.wikipedia.org/wiki/X86_memory_segmentation) `I like the history and detailed explanation in this article.`
-
-Let's talk a little about each one.
-
-`NOTE: The maximum addressable memory on x86 systems is 4 GB (4,294,967,296 bytes).`
+    - [x86 Memory Segmentation](https://en.wikipedia.org/wiki/X86_memory_segmentation) (`I like the history and detailed explanation in this article.`)
 
 ## Segmentation
 
@@ -98,6 +87,8 @@ Segmentation also results in `memory fragmentation` which can happen when there'
 
 Today, segmentation is only used to provide backwards compatibility and is not used in current x86_64 operating systems in favor of paging. All the literature recommends setting up a flat-memory model (AKA make each segment as long as the whole width of available memory) and set up segmentation because we can't turn it off at the CPU level.
 
+`NOTE: The maximum addressable memory on x86 systems is 4 GB (4,294,967,296 bytes).`
+
 ### How do we set up segmentation?
 
 In order to setup segmentation we need to implement a Global Descriptor Table (GDT). This table contains entries that tell the CPU about memory segments.
@@ -110,7 +101,8 @@ Once we setup our GDT data structure we have to load the base address of the tab
     lgdt address_of_gdt
 ```
 
-`NOTE: We're going to be using assembly to setup our kernel's GDT.`
+`NOTE: We're going to be using assembly to setup our kernel's GDT. But most of the configuration is done in C++.`
 
-You can check out the GDT code [here](https://github.com/svr4/midnite/blob/main/src/loader.s).
-
+- You can check out the GDT loading code [here](https://github.com/svr4/midnite/blob/main/src/gdt_load.s).
+- You can check out the GDT class declaration [here](https://github.com/svr4/midnite/blob/main/include/memory/gdt.hpp).
+- You can check out the GDT configuration implementation code [here](https://github.com/svr4/midnite/blob/main/src/include/memory/gdt.cpp).
